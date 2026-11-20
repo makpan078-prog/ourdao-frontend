@@ -19,6 +19,16 @@ updates:
         update-types:
           - "minor"
           - "patch"
+    # Major upgrades of these stay out of automated PRs. eslint is pinned to 9
+    # (#544), so an ignored major here keeps Dependabot from reopening an
+    # eslint 10 PR.
+    ignore:
+      - dependency-name: "@stellar/freighter-api"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@stellar/stellar-sdk"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "eslint"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: "github-actions"
     directory: "/"
