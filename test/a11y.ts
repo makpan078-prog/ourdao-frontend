@@ -99,9 +99,12 @@ export function assertInteractiveNames(container: HTMLElement): void {
     const value = (html as HTMLInputElement).value
     const title = html.getAttribute('title')
     // `title` alone is not a reliable accessible name — require a real name.
+    // A <label for="…"> or wrapping <label> also names a form control.
+    const labelled = Boolean((html as HTMLInputElement).labels?.length)
     const named = Boolean(
       (ariaLabel && ariaLabel.trim()) ||
         labelledBy ||
+        labelled ||
         text ||
         (typeof value === 'string' && value.trim())
     )

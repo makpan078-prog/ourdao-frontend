@@ -40,6 +40,7 @@ vi.mock('@/lib/dao-client', () => ({
 }))
 
 vi.mock('@/lib/backend', () => ({
+  isBackendConfigured: () => false,
   backend: {
     getLoans: vi.fn().mockResolvedValue([]),
     getNotifications: vi.fn().mockResolvedValue([]),

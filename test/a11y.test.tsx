@@ -5,6 +5,7 @@ import userEvent from '@testing-library/user-event'
 import { renderWithProviders } from './test-utils'
 import { AppShell } from '@/components/AppShell'
 import { ConnectButton } from '@/components/ConnectButton'
+import { SkipLink } from '@/components/SkipLink'
 import { runAxe, runAxeWithAllowlist, KNOWN_A11Y_ALLOWLIST, formatViolations, assertInteractiveNames } from './a11y'
 
 /**
@@ -104,7 +105,13 @@ describe('issue #238 — automated accessibility assertions', () => {
   afterEach(() => vi.clearAllMocks())
 
   it('AppShell exposes a skip link, nav landmarks, and has no axe violations', async () => {
-    const { container } = renderWithProviders(<AppShell>Page content</AppShell>)
+    // The skip link comes from the app-level Providers, so render it alongside.
+    const { container } = renderWithProviders(
+      <>
+        <SkipLink />
+        <AppShell>Page content</AppShell>
+      </>
+    )
 
     const skipLink = screen.getByRole('link', { name: /skip to main content/i })
     expect(skipLink).toHaveAttribute('href', '#main-content')
@@ -158,17 +165,16 @@ describe('issue #238 — automated accessibility assertions', () => {
     })
 
     it('AppShell and main page layout at rest have no unallowlisted axe violations', async () => {
+      // AppShell already renders the <main> landmark; pages must not nest another.
       const { container } = renderWithProviders(
         <AppShell>
           <header>
             <h1>Dashboard</h1>
           </header>
-          <main>
-            <section aria-labelledby="metrics-heading">
-              <h2 id="metrics-heading">Overview Metrics</h2>
-              <p>Active Members: 10</p>
-            </section>
-          </main>
+          <section aria-labelledby="metrics-heading">
+            <h2 id="metrics-heading">Overview Metrics</h2>
+            <p>Active Members: 10</p>
+          </section>
         </AppShell>
       )
 
@@ -215,27 +221,25 @@ describe('issue #238 — automated accessibility assertions', () => {
           <header>
             <h1>Governance Proposals</h1>
           </header>
-          <main>
-            <section aria-labelledby="proposals-heading">
-              <h2 id="proposals-heading">Active Proposals</h2>
-              <ul>
-                <li className="flex items-center justify-between p-4">
-                  <div>
-                    <h3>Loan Proposal #1</h3>
-                    <p>100 XLM · 5.0%</p>
-                  </div>
-                  <div role="group" aria-label="Vote options">
-                    <button type="button" aria-label="Vote for proposal 1">
-                      Vote For
-                    </button>
-                    <button type="button" aria-label="Vote against proposal 1">
-                      Vote Against
-                    </button>
-                  </div>
-                </li>
-              </ul>
-            </section>
-          </main>
+          <section aria-labelledby="proposals-heading">
+            <h2 id="proposals-heading">Active Proposals</h2>
+            <ul>
+              <li className="flex items-center justify-between p-4">
+                <div>
+                  <h3>Loan Proposal #1</h3>
+                  <p>100 XLM · 5.0%</p>
+                </div>
+                <div role="group" aria-label="Vote options">
+                  <button type="button" aria-label="Vote for proposal 1">
+                    Vote For
+                  </button>
+                  <button type="button" aria-label="Vote against proposal 1">
+                    Vote Against
+                  </button>
+                </div>
+              </li>
+            </ul>
+          </section>
         </AppShell>
       )
 

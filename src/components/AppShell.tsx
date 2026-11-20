@@ -152,14 +152,7 @@ export function AppShell({ children }: AppShellProps) {
     // the drawer closes (#68).
     <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
     <div className="min-h-screen bg-background">
-      {/* Skip link — first focusable element so keyboard and screen-reader
-          users can bypass the header/nav. Visible on focus only. */}
-      <a
-        href="#main-content"
-        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[200] focus:rounded-lg focus:bg-primary-600 focus:px-4 focus:py-2 focus:text-white"
-      >
-        Skip to main content
-      </a>
+      {/* The skip link is rendered once, globally, by Providers (SkipLink). */}
       {/* Top bar */}
       <header className="sticky top-0 z-40 border-b border-border bg-card/80 backdrop-blur">
         <div className="flex h-16 items-center gap-3 px-4 sm:px-6">
