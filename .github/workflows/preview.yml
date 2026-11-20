@@ -54,9 +54,11 @@ jobs:
       - name: Add preview comment
         if: github.event_name == 'pull_request'
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          PAGE_URL: ${{ steps.deployment.outputs.page_url }}
         with:
           script: |
-            const deploymentUrl = steps.deployment.outputs.page_url;
+            const deploymentUrl = process.env.PAGE_URL;
             const body = `## 🔍 Preview Deployment
 
             A preview of this PR has been built with **testnet** configuration.
@@ -71,7 +73,7 @@ jobs:
 
             > **Note:** If this PR requires a wallet (Freighter), please test locally as preview deployments may not have full wallet integration.`;
 
-            github.rest.issues.createComment({
+            await github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
