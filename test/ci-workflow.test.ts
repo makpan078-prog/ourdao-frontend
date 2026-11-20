@@ -2,7 +2,8 @@ import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 
-const ci = readFileSync(resolve(__dirname, '../.github/workflows/ci.yml'), 'utf8')
+// Normalise CRLF so the checks hold on Windows checkouts (core.autocrlf).
+const ci = readFileSync(resolve(__dirname, '../.github/workflows/ci.yml'), 'utf8').replace(/\r\n/g, '\n')
 
 // Top-level job bodies keyed by name, from `  name:` to the next one. Commented
 // lines are dropped so the #143 design note doesn't count as configuration.
